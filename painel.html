@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>PAINEL DE PEDIDOS - PADARIA EXPRESS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+</head>
+<body class="bg-slate-900 text-white p-4">
+    <header class="flex justify-between items-center mb-6 border-b border-slate-700 pb-4">
+        <h1 class="text-2xl font-black italic text-orange-500">COZINHA EXPRESS</h1>
+        <div id="status-conexao" class="text-xs bg-green-500 text-white px-3 py-1 rounded-full uppercase font-bold">Monitorando Pedidos...</div>
+    </header>
+
+    <div id="lista-pedidos" class="grid gap-4">
+        <!-- Pedidos aparecerão aqui -->
+    </div>
+
+    <!-- Som do Alerta -->
+    <audio id="som-alerta" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3"></audio>
+
+    <script>
+        // Use as MESMAS configurações do Firebase que você já tem no outro arquivo
+        const firebaseConfig = {
+            apiKey: "AIzaSyChLEeFcJ6Es4ADs79Bd9OkXAUCMskDsI4",
+            authDomain: "padaria-expresso.firebaseapp.com",
+            projectId: "padaria-expresso",
+            storageBucket: "padaria-expresso.firebasestorage.app",
+            messagingSenderId: "322600135014",
+            appId: "1:322600135014:web:e9a88278e96984ca500a7"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // Função para tocar o alerta 5 vezes
+        function tocarAlerta() {
+            const som = document.getElementById('som-alerta');
+            let cont = 0;
+            const intervalo = setInterval(() => {
+                som.play();
+                cont++;
+                if(cont >= 5) clearInterval(intervalo);
+            }, 1000); // Toca a cada 1 segundo
+        }
+
+        // Escutar pedidos em tempo real
+        db.collection("pedidos").orderBy("data", "desc").limit(10).onSnapshot((snapshot) => {
+            const lista = document.getElementById('lista-pedidos');
+            
+            snapshot.docChanges().forEach((change) => {
+                if (change.type === "added") {
+                    tocarAlerta(); // Toca o sino quando entra pedido novo
+                }
+            });
+
+            lista.innerHTML = "";
+            snapshot.forEach((doc) => {
+                const p = doc.data();
+                const itensHTML = p.itens.map(i => `<div class="flex justify-between border-b border-slate-700 py-1 text-sm"><span>${i.qtd}x ${i.nome}</span><span>R$ ${(i.preco * i.qtd).toFixed(2)}</span></div>`).join('');
+
+                lista.innerHTML += `
+                    <div class="bg-slate-800 p-5 rounded-3xl border-2 border-orange-500 shadow-xl animate-pulse-once">
+                        <div class="flex justify-between items-start mb-3">
+                            <div>
+                                <h2 class="text-xl font-black text-orange-400 leading-none">${p.cliente.condominio.toUpperCase()}</h2>
+                                <p class="text-xs text-slate-400 mt-1">BL ${p.cliente.bloco} - APTO ${p.cliente.apto}</p>
+                            </div>
+                            <span class="bg-orange-500 text-[10px] font-black px-2 py-1 rounded">R$ ${p.total.toFixed(2)}</span>
+                        </div>
+                        <div class="bg-slate-900/50 p-3 rounded-xl mb-4">${itensHTML}</div>
+                        <div class="flex justify-between items-center text-xs font-bold">
+                            <span class="text-green-400 italic italic tracking-wider">💳 ${p.pagamento.toUpperCase()}</span>
+                            <button onclick="concluir('${doc.id}')" class="bg-green-600 hover:bg-green-500 px-4 py-2 rounded-lg transition-all">CONCLUIR / SAIR PARA ENTREGA</button>
+                        </div>
+                    </div>
+                `;
+            });
+        });
+
+        function concluir(id) {
+            if(confirm("Deseja arquivar este pedido?")) {
+                db.collection("pedidos").doc(id).delete();
+            }
+        }
+
+        // IMPORTANTE: Navegadores bloqueiam som automático. 
+        // Você precisa clicar uma vez em qualquer lugar da tela do painel ao abrir para "autorizar" o som.
+        document.body.onclick = () => { console.log("Alerta sonoro ativado!"); };
+    </script>
+</body>
+</html>
