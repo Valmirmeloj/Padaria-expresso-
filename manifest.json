@@ -1,16 +1,16 @@
 {
   "name": "Padaria Express",
   "short_name": "Padaria",
-  "description": "Peça na padaria do seu condomínio",
-  "start_url": "./index.html",
+  "start_url": "index.html",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#f97316",
   "icons": [
     {
-      "src": "https://cdn-icons-png.flaticon.com/512/3014/3014534.png",
+      "src": "logo.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ]
 }
