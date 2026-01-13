@@ -15,73 +15,54 @@
         .card-destaque-slim { background: white; border-left: 5px solid #f97316; min-width: 260px; border-radius: 20px; padding: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); display: flex; align-items: center; gap: 12px; }
         .caixa-endereco-destaque { border: 3px dashed #f97316; background-color: #fff; position: relative; margin-top: 30px; border-radius: 30px; padding: 25px; }
         .titulo-endereco-flutuante { position: absolute; top: -18px; left: 50%; transform: translateX(-50%); background-color: #ea580c; color: white; padding: 6px 25px; border-radius: 50px; font-weight: 900; font-size: 12px; text-transform: uppercase; }
-        .input-padrao { width: 100%; padding: 14px 14px 14px 50px; background-color: #f3f4f6; border-radius: 18px; font-weight: 700; outline: none; border: 2px solid transparent; transition: 0.3s; }
-        .input-padrao:focus { border-color: #f97316; background-color: white; }
+        .input-padrao { width: 100%; padding: 14px 14px 14px 50px; background-color: #f3f4f6; border-radius: 18px; font-weight: 700; outline: none; }
         .icone-input { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); z-index: 10; }
-        
-        /* Estilo Botões Pagamento */
-        .btn-pagamento { border: 2px solid #f3f4f6; border-radius: 15px; padding: 10px; display: flex; flex-direction: column; align-items: center; gap: 5px; cursor: pointer; transition: 0.3s; flex: 1; background: #f9fafb; color: #6b7280; }
-        .btn-pagamento.active { border-color: #f97316; background-color: #fff7ed; color: #ea580c; transform: scale(1.05); }
     </style>
 </head>
-<body class="bg-gray-50 pb-44 text-gray-800">
-
-    <!-- MODAL DE AVISO PROFISSIONAL -->
-    <div id="modal-aviso" class="fixed inset-0 bg-black/60 hidden items-center justify-center z-[100] px-6">
-        <div class="bg-white rounded-[2.5rem] p-8 w-full max-w-sm text-center shadow-2xl border-t-8 border-orange-500">
-            <div class="bg-orange-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
-                <i class="fas fa-exclamation-triangle text-orange-600 text-3xl"></i>
-            </div>
-            <h3 class="text-xl font-black text-gray-800 uppercase italic">Atenção!</h3>
-            <p id="modal-msg" class="text-gray-600 font-bold mt-2 mb-6 leading-tight"></p>
-            <button onclick="fecharModal()" class="w-full bg-orange-500 text-white font-black py-4 rounded-2xl shadow-lg uppercase tracking-widest active:scale-95 transition-all">Entendi</button>
+<body class="bg-gray-50 pb-44">
+    <!-- HEADER COM A SUA LOGO -->
+    <header class="bg-white p-4 shadow-sm sticky top-0 z-50 border-b-2 border-orange-500 flex justify-between items-center px-6">
+        <div class="flex items-center gap-2">
+            <img src="logo.png" alt="Logo" class="w-10 h-10 object-contain">
+            <span class="text-orange-600 font-black italic text-xl uppercase">Padaria Express</span>
         </div>
-    </div>
-
-    <header class="bg-white p-4 shadow-sm sticky top-0 z-50 border-b-2 border-orange-500 flex justify-between items-center px-6 text-orange-600 font-black italic text-xl uppercase">
-        Padaria Express <span class="bg-orange-50 text-[10px] px-2 py-1 rounded-full border border-orange-200 uppercase not-italic">Aberto</span>
+        <span class="bg-orange-50 text-[10px] px-2 py-1 rounded-full border border-orange-200 uppercase font-bold text-orange-600">Aberto</span>
     </header>
 
     <main class="container mx-auto p-4">
+        <!-- SEÇÃO DE DESTAQUES -->
         <section class="mb-8">
-            <h2 class="text-[10px] font-black text-gray-400 uppercase mb-3 tracking-widest flex items-center gap-2"><i class="fas fa-bolt text-orange-500"></i> Sugestões Rápidas</h2>
+            <h2 class="text-[10px] font-black text-gray-400 uppercase mb-3 tracking-widest flex items-center gap-2">
+                <i class="fas fa-star text-orange-500"></i> Mais Pedidos
+            </h2>
             <div id="container-destaques" class="flex overflow-x-auto gap-4 no-scrollbar pb-2"></div>
         </section>
 
+        <!-- CARDÁPIO GERAL -->
         <section class="mb-10">
-            <h2 class="text-[10px] font-black text-gray-400 uppercase mb-4 tracking-widest flex items-center gap-2"><i class="fas fa-th-large text-orange-500"></i> Cardápio Geral</h2>
+            <h2 class="text-[10px] font-black text-gray-400 uppercase mb-4 tracking-widest flex items-center gap-2">
+                <i class="fas fa-bread-slice text-orange-500"></i> Itens de Mercearia
+            </h2>
             <div id="container-geral" class="grid grid-cols-2 gap-4"></div>
         </section>
 
+        <!-- ENDEREÇO -->
         <section class="mb-10">
             <div class="caixa-endereco-destaque shadow-xl">
-                <div class="titulo-endereco-flutuante italic">Finalizar Pedido</div>
+                <div class="titulo-endereco-flutuante italic">Onde Entregar?</div>
                 <div class="space-y-4 mt-2">
-                    <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest px-2">Endereço de Entrega</p>
                     <div class="relative"><i class="fas fa-building icone-input text-orange-500"></i><input type="text" id="campo-condominio" placeholder="Nome do Condomínio" class="input-padrao"></div>
                     <div class="flex gap-3">
                         <div class="relative w-1/2"><span class="icone-input font-black text-orange-500 text-xs">BL</span><input type="text" id="campo-bloco" placeholder="Bloco" class="input-padrao pl-12"></div>
                         <div class="relative w-1/2"><i class="fas fa-door-open icone-input text-orange-500"></i><input type="text" id="campo-apto" placeholder="Apto" class="input-padrao"></div>
                     </div>
                     <div class="relative"><i class="fab fa-whatsapp icone-input text-green-500 text-xl"></i><input type="tel" id="campo-whatsapp" placeholder="Seu WhatsApp" class="input-padrao"></div>
-
-                    <!-- FORMA DE PAGAMENTO -->
-                    <hr class="border-gray-100 my-2">
-                    <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest px-2">Forma de Pagamento</p>
-                    <div class="flex gap-2">
-                        <div class="btn-pagamento" onclick="setPagamento('Pix', this)"><i class="fas fa-qrcode"></i><span class="text-[10px] font-bold">PIX</span></div>
-                        <div class="btn-pagamento" onclick="setPagamento('Cartão', this)"><i class="fas fa-credit-card"></i><span class="text-[10px] font-bold">CARTÃO</span></div>
-                        <div class="btn-pagamento" onclick="setPagamento('Dinheiro', this)"><i class="fas fa-money-bill-wave"></i><span class="text-[10px] font-bold">DINHEIRO</span></div>
-                    </div>
-                    <div id="caixa-troco" class="hidden relative">
-                        <i class="fas fa-coins icone-input text-orange-500"></i>
-                        <input type="text" id="campo-troco" placeholder="Troco para quanto?" class="input-padrao">
-                    </div>
                 </div>
             </div>
         </section>
     </main>
 
+    <!-- BOTÃO FLUTUANTE DE PEDIDO -->
     <div class="fixed bottom-0 left-0 right-0 bg-white border-t p-4 shadow-2xl z-[60]">
         <button id="botao-enviar" class="w-full bg-green-600 text-white flex items-center justify-between p-5 rounded-[2rem] active:scale-95 transition-all shadow-lg shadow-green-200">
             <div class="flex items-center gap-4">
@@ -93,64 +74,61 @@
     </div>
 
     <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyChLEeFcJ6Es4ADs79Bd9OkXAUCMskDsI4",
-            authDomain: "padaria-expresso.firebaseapp.com",
-            projectId: "padaria-expresso",
-            storageBucket: "padaria-expresso.firebasestorage.app",
-            messagingSenderId: "322600135014",
-            appId: "1:322600135014:web:e9a88278e96984ca500a7"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-
-        let formaPagamento = "";
-        let carrinho = [];
-        let PRODUTOS = [
-            { id: 1, destaque: true, nome: "Pão Francês", preco: 1.00, img: "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=200" },
-            { id: 2, destaque: true, nome: "Coca 2L", preco: 11.00, img: "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=200" },
-            { id: 3, destaque: false, nome: "Mortadela Defumada", preco: 5.50, img: "https://images.unsplash.com/photo-1629713014426-35738f29a13b?w=200" },
-            { id: 4, destaque: false, nome: "Leite Integral", preco: 6.20, img: "https://images.unsplash.com/photo-1563636619-e9107da5a163?w=200" }
+        // LISTA DE PRODUTOS COM AS SUAS IMAGENS
+        // DICA: Salve as imagens na mesma pasta do código com esses nomes (ex: cafe500.jpg)
+        const PRODUTOS = [
+            { id: 1, destaque: true, nome: "Pão Francês Fresquinho", preco: 1.00, img: "pao.jpg" },
+            { id: 2, destaque: true, nome: "Café Pilão Extra Forte 500g", preco: 22.90, img: "cafe500.jpg" },
+            { id: 3, destaque: true, nome: "Margarina Qualy 500g", preco: 12.50, img: "qualy500.jpg" },
+            { id: 4, destaque: false, nome: "Sal Lebre Refinado 1kg", preco: 4.50, img: "sal.jpg" },
+            { id: 5, destaque: false, nome: "Café Pilão Tradicional 250g", preco: 11.50, img: "cafe250.jpg" },
+            { id: 6, destaque: false, nome: "Guaraná Antarctica 2L", preco: 10.90, img: "guarana.jpg" },
+            { id: 7, destaque: false, nome: "Margarina Qualy 250g", preco: 7.20, img: "qualy250.jpg" }
         ];
+
+        let carrinho = [];
 
         window.onload = () => { renderizar(); carregarDados(); };
 
         function renderizar() {
             const dest = document.getElementById('container-destaques');
             const geral = document.getElementById('container-geral');
+            
             PRODUTOS.forEach(p => {
-                const card = `<div class="${p.destaque ? 'card-destaque-slim' : 'bg-white rounded-[2rem] p-4 shadow-sm border border-gray-100 flex flex-col items-center text-center'}">
-                    <img src="${p.img}" class="w-16 h-16 object-cover rounded-2xl">
-                    <div class="flex-1 text-left"><h3 class="font-bold text-gray-800 text-xs">${p.nome}</h3><p class="text-orange-500 font-black text-sm">R$ ${p.preco.toFixed(2)}</p></div>
-                    <div class="flex items-center gap-2 bg-gray-100 rounded-2xl p-1">
+                const card = `
+                <div class="${p.destaque ? 'card-destaque-slim' : 'bg-white rounded-[2rem] p-4 shadow-sm border border-gray-100 flex flex-col items-center text-center'}">
+                    <img src="${p.img}" class="w-20 h-20 object-contain rounded-xl mb-2">
+                    <div class="flex-1 text-left">
+                        <h3 class="font-bold text-gray-800 text-[11px] leading-tight mb-1">${p.nome}</h3>
+                        <p class="text-orange-500 font-black text-sm">R$ ${p.preco.toFixed(2)}</p>
+                    </div>
+                    <div class="flex items-center gap-2 bg-gray-100 rounded-2xl p-1 mt-2">
                         <button onclick="mudar(${p.id}, -1)" class="bg-white w-7 h-7 rounded-xl text-orange-600 font-black shadow-sm">-</button>
-                        <span id="q-${p.id}" class="font-black text-xs">0</span>
+                        <span id="q-${p.id}" class="font-black text-xs w-4 text-center">0</span>
                         <button onclick="mudar(${p.id}, 1)" class="bg-orange-500 w-7 h-7 rounded-xl text-white font-black shadow-sm">+</button>
-                    </div></div>`;
+                    </div>
+                </div>`;
                 p.destaque ? dest.innerHTML += card : geral.innerHTML += card;
             });
         }
 
         function mudar(id, val) {
             let item = carrinho.find(i => i.id === id);
-            if(item) { item.qtd += val; if(item.qtd <= 0) carrinho = carrinho.filter(i => i.id !== id); }
-            else if(val > 0) { const p = PRODUTOS.find(prod => prod.id === id); carrinho.push({...p, qtd: 1}); }
+            if(item) { 
+                item.qtd += val; 
+                if(item.qtd <= 0) carrinho = carrinho.filter(i => i.id !== id); 
+            } else if(val > 0) { 
+                const p = PRODUTOS.find(prod => prod.id === id); 
+                carrinho.push({...p, qtd: 1}); 
+            }
+            
             const atual = carrinho.find(i => i.id === id);
             document.querySelectorAll(`#q-${id}`).forEach(el => el.innerText = atual ? atual.qtd : 0);
+            
             const total = carrinho.reduce((a, b) => a + (b.preco * b.qtd), 0);
             document.getElementById('preco-total').innerText = `R$ ${total.toFixed(2)}`;
             document.getElementById('contagem-itens').innerText = carrinho.reduce((a, b) => a + b.qtd, 0);
         }
-
-        function setPagamento(metodo, el) {
-            formaPagamento = metodo;
-            document.querySelectorAll('.btn-pagamento').forEach(b => b.classList.remove('active'));
-            el.classList.add('active');
-            document.getElementById('caixa-troco').className = metodo === 'Dinheiro' ? 'relative block' : 'hidden';
-        }
-
-        function abrirModal(msg) { document.getElementById('modal-msg').innerText = msg; document.getElementById('modal-aviso').style.display = 'flex'; }
-        function fecharModal() { document.getElementById('modal-aviso').style.display = 'none'; }
 
         function carregarDados() {
             const s = JSON.parse(localStorage.getItem('dados_padaria'));
@@ -164,48 +142,27 @@
 
         document.querySelectorAll('input').forEach(i => {
             i.oninput = () => {
-                const d = { c: document.getElementById('campo-condominio').value, b: document.getElementById('campo-bloco').value, a: document.getElementById('campo-apto').value, w: document.getElementById('campo-whatsapp').value };
+                const d = { 
+                    c: document.getElementById('campo-condominio').value, 
+                    b: document.getElementById('campo-bloco').value, 
+                    a: document.getElementById('campo-apto').value, 
+                    w: document.getElementById('campo-whatsapp').value 
+                };
                 localStorage.setItem('dados_padaria', JSON.stringify(d));
             }
         });
 
-        // BOTÃO FINALIZAR ATUALIZADO (PASSO 1)
-        document.getElementById('botao-enviar').onclick = async () => {
+        document.getElementById('botao-enviar').onclick = () => {
             const c = document.getElementById('campo-condominio').value;
-            const b = document.getElementById('campo-bloco').value;
             const a = document.getElementById('campo-apto').value;
-            const w = document.getElementById('campo-whatsapp').value;
-            const troco = document.getElementById('campo-troco').value;
-
-            if(carrinho.length === 0) return abrirModal("Escolha os produtos primeiro!");
-            if(!c || !a || !w) return abrirModal("Preencha o endereço e seu WhatsApp!");
-            if(!formaPagamento) return abrirModal("Selecione como deseja pagar!");
-
-            const total = carrinho.reduce((acc, i) => acc + (i.preco * i.qtd), 0);
-
-            const pedido = {
-                cliente: { condominio: c, bloco: b, apto: a, whatsapp: w },
-                itens: carrinho,
-                total: total,
-                pagamento: formaPagamento,
-                troco: troco || "Não necessário",
-                data: firebase.firestore.FieldValue.serverTimestamp()
-            };
-
-            try {
-                // Envia para o seu Painel da Cozinha
-                await db.collection("pedidos").add(pedido);
-                
-                // Abre o WhatsApp para o cliente
-                let m = `*NOVO PEDIDO - PADARIA EXPRESS*\n🏢 *${c.toUpperCase()}*\n📍 Bloco ${b} - Apto ${a}\n----------------------------\n`;
-                carrinho.forEach(i => m += `✅ ${i.qtd}x ${i.nome}\n`);
-                m += `----------------------------\n*TOTAL: R$ ${total.toFixed(2)}*\n💳 *PAGAMENTO:* ${formaPagamento}`;
-                if(troco) m += `\n💰 *TROCO PARA:* ${troco}`;
-
-                window.open(`https://api.whatsapp.com/send?phone=5521993603809&text=${encodeURIComponent(m)}`);
-            } catch (e) {
-                alert("Erro de conexão. Verifique sua internet.");
-            }
+            if(carrinho.length === 0) return alert("Adicione itens ao carrinho!");
+            if(!c || !a) return alert("Preencha o condomínio e apto!");
+            
+            let m = `*PEDIDO PADARIA EXPRESS*\n🏢 *CONDOMÍNIO:* ${c.toUpperCase()}\n📍 *Bloco:* ${document.getElementById('campo-bloco').value} - *Apto:* ${a}\n\n`;
+            carrinho.forEach(i => m += `✅ ${i.qtd}x ${i.nome} - R$ ${(i.preco * i.qtd).toFixed(2)}\n`);
+            m += `\n💰 *TOTAL: ${document.getElementById('preco-total').innerText}*`;
+            
+            window.open(`https://api.whatsapp.com/send?phone=5511999999999&text=${encodeURIComponent(m)}`);
         }
     </script>
 </body>
