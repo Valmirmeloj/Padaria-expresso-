@@ -3,123 +3,153 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel Admin - Padaria</title>
+    <!-- NOME NA ABA DO NAVEGADOR -->
+    <title>Monte das oliveiras</title> 
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#f97316">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <style>
-        #painel-controle { display: none; } /* Esconde o painel até logar */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .card-destaque-slim { background: white; border-left: 5px solid #f97316; min-width: 260px; border-radius: 20px; padding: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); display: flex; align-items: center; gap: 12px; }
+        .caixa-endereco-destaque { border: 3px dashed #f97316; background-color: #fff; position: relative; margin-top: 30px; border-radius: 30px; padding: 25px; }
+        .titulo-endereco-flutuante { position: absolute; top: -18px; left: 50%; transform: translateX(-50%); background-color: #ea580c; color: white; padding: 6px 25px; border-radius: 50px; font-weight: 900; font-size: 12px; text-transform: uppercase; }
+        .input-padrao { width: 100%; padding: 14px 14px 14px 50px; background-color: #f3f4f6; border-radius: 18px; font-weight: 700; outline: none; }
+        .icone-input { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); z-index: 10; }
     </style>
 </head>
-<body class="bg-gray-100 pb-20">
-
-    <!-- TELA DE LOGIN -->
-    <div id="tela-login" class="fixed inset-0 bg-orange-600 flex items-center justify-center z-[100] px-6">
-        <div class="bg-white p-8 rounded-[2.5rem] shadow-2xl w-full max-w-sm text-center">
-            <i class="fas fa-lock text-orange-500 text-4xl mb-4"></i>
-            <h2 class="text-2xl font-black text-gray-800 mb-6 uppercase italic">Acesso Restrito</h2>
-            <input type="password" id="senha-acesso" placeholder="Digite a Senha" class="w-full p-4 bg-gray-100 rounded-2xl mb-4 outline-none border-2 focus:border-orange-500 text-center font-bold">
-            <button onclick="fazerLogin()" class="w-full bg-orange-600 text-white font-black py-4 rounded-2xl">ENTRAR NO PAINEL</button>
+<body class="bg-gray-50 pb-44">
+    <!-- HEADER COM O NOVO NOME -->
+    <header class="bg-white p-4 shadow-sm sticky top-0 z-50 border-b-2 border-orange-500 flex justify-between items-center px-4">
+        <div class="flex items-center gap-2">
+            <img src="logo.png" alt="Logo" class="w-10 h-10 object-contain">
+            <div class="flex flex-col">
+                <span class="text-orange-600 font-black italic text-sm uppercase leading-none">Padaria e mercearia</span>
+                <span class="text-gray-800 font-black text-lg uppercase tracking-tighter">Monte das oliveiras</span>
+            </div>
         </div>
-    </div>
+        <span class="bg-orange-50 text-[10px] px-2 py-1 rounded-full border border-orange-200 uppercase font-bold text-orange-600">Aberto</span>
+    </header>
 
-    <!-- PAINEL DE CONTROLE (O que você já tinha) -->
-    <div id="painel-controle">
-        <header class="bg-orange-600 p-4 text-white shadow-md mb-6 flex justify-between items-center px-6">
-            <h1 class="text-lg font-black uppercase italic">Admin Padaria</h1>
-            <button onclick="location.reload()" class="text-xs bg-orange-800 px-3 py-1 rounded-full">Sair</button>
-        </header>
+    <main class="container mx-auto p-4">
+        <section class="mb-8">
+            <h2 class="text-[10px] font-black text-gray-400 uppercase mb-3 tracking-widest flex items-center gap-2">
+                <i class="fas fa-star text-orange-500"></i> Mais Pedidos
+            </h2>
+            <div id="container-destaques" class="flex overflow-x-auto gap-4 no-scrollbar pb-2"></div>
+        </section>
 
-        <main class="container mx-auto px-4">
-            <!-- Formulário de Cadastro -->
-            <section class="bg-white p-6 rounded-3xl shadow-sm mb-8 border-2 border-orange-100">
-                <h2 class="font-bold text-gray-700 mb-4 uppercase text-xs">Novo Produto</h2>
-                <div class="space-y-3">
-                    <input type="text" id="add-nome" placeholder="Nome do Produto" class="w-full p-3 bg-gray-50 rounded-xl outline-none font-bold">
-                    <div class="flex gap-2">
-                        <input type="number" id="add-preco" placeholder="Preço" class="w-1/2 p-3 bg-gray-50 rounded-xl outline-none font-bold">
-                        <select id="add-unid" class="w-1/2 p-3 bg-gray-50 rounded-xl font-bold">
-                            <option value="unid">Unidade</option>
-                            <option value="100g">100g</option>
-                        </select>
+        <section class="mb-10">
+            <h2 class="text-[10px] font-black text-gray-400 uppercase mb-4 tracking-widest flex items-center gap-2">
+                <i class="fas fa-bread-slice text-orange-500"></i> Itens de Mercearia
+            </h2>
+            <div id="container-geral" class="grid grid-cols-2 gap-4"></div>
+        </section>
+
+        <section class="mb-10">
+            <div class="caixa-endereco-destaque shadow-xl">
+                <div class="titulo-endereco-flutuante italic">Onde Entregar?</div>
+                <div class="space-y-4 mt-2">
+                    <div class="relative"><i class="fas fa-building icone-input text-orange-500"></i><input type="text" id="campo-condominio" placeholder="Nome do Condomínio" class="input-padrao"></div>
+                    <div class="flex gap-3">
+                        <div class="relative w-1/2"><span class="icone-input font-black text-orange-500 text-xs">BL</span><input type="text" id="campo-bloco" placeholder="Bloco" class="input-padrao pl-12"></div>
+                        <div class="relative w-1/2"><i class="fas fa-door-open icone-input text-orange-500"></i><input type="text" id="campo-apto" placeholder="Apto" class="input-padrao"></div>
                     </div>
-                    <input type="text" id="add-img" placeholder="Link da Foto (.jpg / .png)" class="w-full p-3 bg-gray-50 rounded-xl outline-none">
-                    <label class="flex items-center gap-2 p-2 bg-orange-50 rounded-xl">
-                        <input type="checkbox" id="add-destaque" class="w-5 h-5">
-                        <span class="font-bold text-xs">Destaque no Topo</span>
-                    </label>
-                    <button onclick="salvarProduto()" class="w-full bg-orange-600 text-white font-black py-4 rounded-2xl shadow-lg">SALVAR PRODUTO</button>
+                    <div class="relative"><i class="fab fa-whatsapp icone-input text-green-500 text-xl"></i><input type="tel" id="campo-whatsapp" placeholder="Seu WhatsApp" class="input-padrao"></div>
                 </div>
-            </section>
+            </div>
+        </section>
+    </main>
 
-            <!-- Lista de Produtos -->
-            <div id="lista-admin" class="space-y-3"></div>
-        </main>
+    <div class="fixed bottom-0 left-0 right-0 bg-white border-t p-4 shadow-2xl z-[60]">
+        <button id="botao-enviar" class="w-full bg-green-600 text-white flex items-center justify-between p-5 rounded-[2rem] active:scale-95 transition-all shadow-lg shadow-green-200">
+            <div class="flex items-center gap-4">
+                <div class="bg-white text-green-700 w-12 h-12 flex items-center justify-center rounded-full font-black text-2xl" id="contagem-itens">0</div>
+                <div class="text-left font-black text-lg italic uppercase">Pedir Agora</div>
+            </div>
+            <span id="preco-total" class="font-black text-2xl tracking-tighter">R$ 0,00</span>
+        </button>
     </div>
 
     <script>
-        // CONFIGURAÇÃO FIREBASE
-        const firebaseConfig = {
-            apiKey: "AIzaSyChLEeFcJ6Es4ADs79Bd9OkXAUCMskDsI4",
-            authDomain: "padaria-expresso.firebaseapp.com",
-            projectId: "padaria-expresso",
-            storageBucket: "padaria-expresso.firebasestorage.app",
-            messagingSenderId: "322600135014",
-            appId: "1:322600135014:web:e9a88278e96984ca500a7"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
+        // Lembre-se de conferir se o pão é .jpg ou .png como conversamos!
+        const PRODUTOS = [
+            { id: 1, destaque: true, nome: "Pão Francês Fresquinho", preco: 1.00, img: "pao.jpg" },
+            { id: 2, destaque: true, nome: "Café Pilão Extra Forte 500g", preco: 22.90, img: "cafe500.jpg" },
+            { id: 3, destaque: true, nome: "Margarina Qualy 500g", preco: 12.50, img: "qualy500.jpg" },
+            { id: 4, destaque: false, nome: "Sal Lebre Refinado 1kg", preco: 4.50, img: "sal.jpg" },
+            { id: 5, destaque: false, nome: "Café Pilão Tradicional 250g", preco: 11.50, img: "cafe250.jpg" },
+            { id: 6, destaque: false, nome: "Guaraná Antarctica 2L", preco: 10.90, img: "guarana.jpg" },
+            { id: 7, destaque: false, nome: "Margarina Qualy 250g", preco: 7.20, img: "qualy250.jpg" }
+        ];
 
-        // FUNÇÃO DE LOGIN
-        function fazerLogin() {
-            const senha = document.getElementById('senha-acesso').value;
-            if(senha === "1234") { // <--- COLOQUE SUA SENHA AQUI
-                document.getElementById('tela-login').style.display = 'none';
-                document.getElementById('painel-controle').style.display = 'block';
-                carregarProdutos();
-            } else {
-                alert("Senha Incorreta!");
+        let carrinho = [];
+
+        window.onload = () => { renderizar(); carregarDados(); };
+
+        function renderizar() {
+            const dest = document.getElementById('container-destaques');
+            const geral = document.getElementById('container-geral');
+            PRODUTOS.forEach(p => {
+                const card = `
+                <div class="${p.destaque ? 'card-destaque-slim' : 'bg-white rounded-[2rem] p-4 shadow-sm border border-gray-100 flex flex-col items-center text-center'}">
+                    <img src="${p.img}" class="w-20 h-20 object-contain rounded-xl mb-2">
+                    <div class="flex-1 text-left">
+                        <h3 class="font-bold text-gray-800 text-[11px] leading-tight mb-1">${p.nome}</h3>
+                        <p class="text-orange-500 font-black text-sm">R$ ${p.preco.toFixed(2)}</p>
+                    </div>
+                    <div class="flex items-center gap-2 bg-gray-100 rounded-2xl p-1 mt-2">
+                        <button onclick="mudar(${p.id}, -1)" class="bg-white w-7 h-7 rounded-xl text-orange-600 font-black shadow-sm">-</button>
+                        <span id="q-${p.id}" class="font-black text-xs w-4 text-center">0</span>
+                        <button onclick="mudar(${p.id}, 1)" class="bg-orange-500 w-7 h-7 rounded-xl text-white font-black shadow-sm">+</button>
+                    </div>
+                </div>`;
+                p.destaque ? dest.innerHTML += card : geral.innerHTML += card;
+            });
+        }
+
+        function mudar(id, val) {
+            let item = carrinho.find(i => i.id === id);
+            if(item) { item.qtd += val; if(item.qtd <= 0) carrinho = carrinho.filter(i => i.id !== id); }
+            else if(val > 0) { const p = PRODUTOS.find(prod => prod.id === id); carrinho.push({...p, qtd: 1}); }
+            const atual = carrinho.find(i => i.id === id);
+            document.querySelectorAll(`#q-${id}`).forEach(el => el.innerText = atual ? atual.qtd : 0);
+            const total = carrinho.reduce((a, b) => a + (b.preco * b.qtd), 0);
+            document.getElementById('preco-total').innerText = `R$ ${total.toFixed(2)}`;
+            document.getElementById('contagem-itens').innerText = carrinho.reduce((a, b) => a + b.qtd, 0);
+        }
+
+        function carregarDados() {
+            const s = JSON.parse(localStorage.getItem('dados_padaria'));
+            if(s) { 
+                document.getElementById('campo-condominio').value = s.c || '';
+                document.getElementById('campo-bloco').value = s.b || '';
+                document.getElementById('campo-apto').value = s.a || '';
+                document.getElementById('campo-whatsapp').value = s.w || '';
             }
         }
 
-        async function salvarProduto() {
-            const nome = document.getElementById('add-nome').value;
-            const preco = document.getElementById('add-preco').value;
-            const unid = document.getElementById('add-unid').value;
-            const img = document.getElementById('add-img').value;
-            const destaque = document.getElementById('add-destaque').checked;
+        document.querySelectorAll('input').forEach(i => {
+            i.oninput = () => {
+                const d = { c: document.getElementById('campo-condominio').value, b: document.getElementById('campo-bloco').value, a: document.getElementById('campo-apto').value, w: document.getElementById('campo-whatsapp').value };
+                localStorage.setItem('dados_padaria', JSON.stringify(d));
+            }
+        });
 
-            if(!nome || !preco || !img) return alert("Preencha tudo!");
-
-            await db.collection("produtos").add({
-                nome, preco: parseFloat(preco), unid, img, destaque, criadoEm: Date.now()
-            });
-            alert("Produto Salvo!");
-            location.reload();
-        }
-
-        function carregarProdutos() {
-            db.collection("produtos").orderBy("criadoEm", "desc").onSnapshot(snap => {
-                const container = document.getElementById('lista-admin');
-                container.innerHTML = '';
-                snap.forEach(doc => {
-                    const p = doc.data();
-                    container.innerHTML += `
-                        <div class="bg-white p-4 rounded-2xl shadow-sm flex items-center gap-4 border border-gray-100">
-                            <img src="${p.img}" class="w-12 h-12 object-cover rounded-lg">
-                            <div class="flex-1">
-                                <h3 class="font-bold text-gray-800 text-sm">${p.nome}</h3>
-                                <p class="text-xs text-gray-400">R$ ${p.preco.toFixed(2)}</p>
-                            </div>
-                            <button onclick="deletar('${doc.id}')" class="text-red-500 p-2"><i class="fas fa-trash"></i></button>
-                        </div>`;
-                });
-            });
-        }
-
-        async function deletar(id) {
-            if(confirm("Apagar produto?")) await db.collection("produtos").doc(id).delete();
+        document.getElementById('botao-enviar').onclick = () => {
+            const c = document.getElementById('campo-condominio').value;
+            const a = document.getElementById('campo-apto').value;
+            const b = document.getElementById('campo-bloco').value;
+            if(carrinho.length === 0) return alert("Adicione itens ao carrinho!");
+            if(!c || !a) return alert("Preencha o condomínio e apto!");
+            
+            // NOME ATUALIZADO NO WHATSAPP TAMBÉM
+            let m = `*PEDIDO: MONTE DAS OLIVEIRAS*\n🏢 *CONDOMÍNIO:* ${c.toUpperCase()}\n📍 *Bloco:* ${b} - *Apto:* ${a}\n\n`;
+            carrinho.forEach(i => m += `✅ ${i.qtd}x ${i.nome} - R$ ${(i.preco * i.qtd).toFixed(2)}\n`);
+            m += `\n💰 *TOTAL: ${document.getElementById('preco-total').innerText}*`;
+            
+            const meuNumero = "5511999999999"; // COLOQUE SEU NÚMERO AQUI
+            window.open(`https://api.whatsapp.com/send?phone=${meuNumero}&text=${encodeURIComponent(m)}`);
         }
     </script>
 </body>
